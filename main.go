@@ -3,12 +3,8 @@
 package main
 
 import (
-	"bytes"
-	"image"
-	"image/color"
-	"image/png"
+	_ "embed"
 	"log"
-	"math"
 	"runtime"
 	"strings"
 	"time"
@@ -23,6 +19,12 @@ import (
 
 // dayLayout is how a local day is written down, the layout both stores use.
 const dayLayout = "2006-01-02"
+
+// trayIcon is the app icon's asterisk reduced to a menu bar template: black
+// on transparent, for macOS to tint with the rest of the bar.
+//
+//go:embed resources/tray.png
+var trayIcon []byte
 
 // app holds the menu bar state. Everything here is touched on the main
 // thread only, by tray callbacks and the view.
@@ -204,7 +206,7 @@ func (a *app) openTodayNote() {
 func (a *app) ready() {
 	var err error
 	a.tray, err = mygo.NewTray(mygo.TrayOptions{
-		Icon:           trayIcon(),
+		Icon:           trayIcon,
 		IconIsTemplate: true,
 		ToolTip:        "Tuck",
 	})
@@ -294,44 +296,6 @@ func (a *app) clearDone() {
 	if _, err := a.store.ClearDone(); err != nil {
 		a.err = err.Error()
 	}
-}
-
-// trayIcon draws a check mark, black on transparent so macOS tints it to
-// match the menu bar.
-func trayIcon() []byte {
-	const size = 32
-	img := image.NewNRGBA(image.Rect(0, 0, size, size))
-	ink := color.NRGBA{A: 255}
-	if runtime.GOOS != "darwin" {
-		ink = color.NRGBA{R: 10, G: 122, B: 255, A: 255}
-	}
-	// The two strokes of the check, with round caps and joins.
-	a := [2]float64{8, 16.5}
-	b := [2]float64{13.5, 22}
-	c := [2]float64{24, 10}
-	for y := 0; y < size; y++ {
-		for x := 0; x < size; x++ {
-			p := [2]float64{float64(x) + 0.5, float64(y) + 0.5}
-			if distToSegment(p, a, b) < 2.4 || distToSegment(p, b, c) < 2.4 {
-				img.Set(x, y, ink)
-			}
-		}
-	}
-	var buf bytes.Buffer
-	_ = png.Encode(&buf, img)
-	return buf.Bytes()
-}
-
-// distToSegment is the distance from p to the segment a-b.
-func distToSegment(p, a, b [2]float64) float64 {
-	dx, dy := b[0]-a[0], b[1]-a[1]
-	len2 := dx*dx + dy*dy
-	t := 0.0
-	if len2 > 0 {
-		t = ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / len2
-		t = math.Max(0, math.Min(1, t))
-	}
-	return math.Hypot(p[0]-(a[0]+t*dx), p[1]-(a[1]+t*dy))
 }
 
 // today names the current local day, in the layout the stores use.
