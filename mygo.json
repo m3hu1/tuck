@@ -1,8 +1,9 @@
 {
   "name": "Tuck",
   "identifier": "dev.mehul.tuck",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "out": "build",
+  "icon": "assets/icon.png",
   "macos": {
     "infoPlist": {
       "LSUIElement": true

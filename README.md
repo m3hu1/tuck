@@ -87,7 +87,7 @@ icons.go                the nine Lucide SVGs, parsed once
 theme.go                panel colors and sizes over MyGo's themes
 internal/todos/         the day's list: items, JSON store, reset clock
 internal/notes/         notes: rolling window, pins, calendar marks, JSON store
-resources/icon.png      app icon
+assets/icon.png         app icon, outside the bundled resources
 resources/tray.png      menu bar template glyph, from the icon's asterisk
 mygo.json               name, identifier, version, and packaging options
 THIRD_PARTY_NOTICES.md  the Lucide and Feather licenses
