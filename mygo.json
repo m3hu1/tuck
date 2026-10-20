@@ -1,0 +1,11 @@
+{
+  "name": "Tuck",
+  "identifier": "dev.mehul.tuck",
+  "version": "1.0.0",
+  "out": "build",
+  "macos": {
+    "infoPlist": {
+      "LSUIElement": true
+    }
+  }
+}
