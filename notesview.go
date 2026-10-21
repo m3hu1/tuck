@@ -972,16 +972,7 @@ func (a *app) notesFoot(c *ui.Context, t *ui.Theme) {
 		// it only fades when the day has nothing to delete yet, and a note
 		// cannot be brought back, so it is held rather than clicked.
 		key := "deleteNote:" + a.ns.day
-		if has {
-			holdLink(c, key, "Delete note", "Hold to delete the note", a.deleteNote)
-		} else {
-			del := ui.ButtonBase(c.Key(key)).Label("Delete note").
-				Padding(0, 0, 2, 0).TextColor(accent)
-			del.Opacity(quietOpacity).Disabled(true)
-			del.Children(func() {
-				ui.Text(c, "Delete note").FontSize(12).SingleLine()
-			})
-		}
+		holdLink(c, key, "Delete note", "Hold to delete the note", !has, a.deleteNote)
 	})
 }
 

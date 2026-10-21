@@ -51,17 +51,19 @@ func (s *holdLinkState) release(source holdLinkSource) {
 // holdLink draws a footer link that sets nothing off until it is held: a
 // thin line fills under the words, and one that is let go early takes it
 // back. It is a link at the footer's size, so it sits in the footer rather
-// than beside it.
-func holdLink(c *ui.Context, key, label, hint string, onConfirm func()) {
+// than beside it. A disabled link is drawn faded and cannot be held.
+func holdLink(c *ui.Context, key, label, hint string, disabled bool, onConfirm func()) {
 	b := ui.ButtonBase(c.Key(key)).Label(label).Description(hint).
 		Cursor(ui.CursorPointer).Padding(0, 0, 2, 0).Radius(4).
 		Background(ui.Transparent).Border(0, ui.Transparent).TextColor(accent)
+	if disabled {
+		b.Opacity(quietOpacity).Disabled(true)
+	}
 	b.Children(func() {
 		ui.Text(c, label).FontSize(12).SingleLine()
 	})
 
 	s := ui.Local(b, "hold", func() holdLinkState { return holdLinkState{} })
-	disabled := b.IsDisabled()
 	b.HandleInput(func(ev ui.InputEvent) bool {
 		switch ev.Kind {
 		case ui.InputPointerDown:

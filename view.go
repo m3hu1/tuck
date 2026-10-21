@@ -387,7 +387,7 @@ func (a *app) footer(c *ui.Context, t *ui.Theme, stats todos.Stats) {
 			// Clearing what is done cannot be taken back, so the link is
 			// held rather than clicked. It sits in the footer as the
 			// page's own link does, and goes with what it asks about.
-			holdLink(c, "clearDone", "Clear", "Hold to clear what is done", a.clearDone)
+			holdLink(c, "clearDone", "Clear", "Hold to clear what is done", false, a.clearDone)
 		}
 		if left := resetLabel(stats); left != "" {
 			ui.Text(c, left).FontSize(12).TextColor(t.TextMuted)
