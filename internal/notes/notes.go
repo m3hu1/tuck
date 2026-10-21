@@ -272,7 +272,12 @@ func (n *Notes) saveFile() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(n.path, data, 0o644)
+	// A crash mid-write must leave the old file, not half a new one.
+	tmp := n.path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, n.path)
 }
 
 // windowStart is the oldest day the rolling window still keeps, today

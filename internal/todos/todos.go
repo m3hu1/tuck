@@ -230,7 +230,12 @@ func (s *Store) save() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(s.path, data, 0o644)
+	// A crash mid-write must leave the old file, not half a new one.
+	tmp := s.path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, s.path)
 }
 
 func today() string { return todayIn(time.Now()) }
