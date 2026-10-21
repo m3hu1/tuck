@@ -33,6 +33,9 @@ func iconScale(size, px float32) (scale, off float32) {
 // view draws the panel. It reads the store every build, so a change shows on
 // the next frame.
 func (a *app) view(c *ui.Context) {
+	// The midnight timer can wake late after a sleep or a clock change; the
+	// first frame puts the list on the right day before anything reads it.
+	a.store.ResetIfNewDay(time.Now())
 	// The panel's colors are Tuck's tokens: the accent blue among them.
 	c.SetTheme(panelTheme(c.Theme()))
 	t := c.Theme()
