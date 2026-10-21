@@ -185,6 +185,9 @@ func (a *app) openDay(day string) bool {
 		return false
 	}
 	a.flushNote()
+	if a.ns.dirty {
+		return false // the note is not on disk yet: stay on it
+	}
 	a.ns.day = day
 	a.ns.note, _ = a.notes.Get(day)
 	a.showText(a.ns.note.Text)
@@ -204,7 +207,8 @@ func (a *app) openNote(day string) {
 	if day == "" || day > today() {
 		day = today()
 	}
-	if a.openDay(day) {
+	// The day may already be on screen: the shortcut still asks for its editor.
+	if a.ns.day == day || a.openDay(day) {
 		a.tab = 1
 		a.editNote()
 	}
