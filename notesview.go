@@ -280,7 +280,7 @@ func (a *app) moveCalDay(delta int) {
 // name one, never further.
 func (a *app) moveCalMonth(delta int) {
 	next := a.ns.calMonth.AddDate(0, delta, 0)
-	if next.Year() < notes.OldestYear || (next.Year() == notes.OldestYear && next.Month() < time.January) {
+	if next.Year() < notes.OldestYear {
 		return
 	}
 	a.ns.calMonth = next
